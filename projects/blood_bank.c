@@ -1,28 +1,7 @@
-/*
-    BLOOD BANK MANAGEMENT SYSTEM
-    Data Structure Course Project
-    Language : C (CLI)
-
-    Data Structures Used:
-      - Linked List  : Donor records
-      - Stack        : Donation history
-      - Queue        : Blood requests
-
-    Files Used:
-      - donors.txt   : Donor data
-      - requests.txt : Blood request data
-      - stock.txt    : Blood inventory
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* ============================
-        STRUCTURES
-============================ */
-
-/* Donor - stored in a Linked List */
 struct Donor {
     int id;
     char name[50];
@@ -33,7 +12,6 @@ struct Donor {
     struct Donor *next;
 };
 
-/* Donation History - stored in a Stack */
 struct History {
     int donorId;
     char name[50];
@@ -42,7 +20,6 @@ struct History {
     struct History *next;
 };
 
-/* Blood Request - stored in a Queue */
 struct Request {
     int id;
     char patient[50];
@@ -52,23 +29,16 @@ struct Request {
     struct Request *next;
 };
 
-/* ============================
-        GLOBAL VARIABLES
-============================ */
-struct Donor   *donorHead   = NULL;  /* Linked List head */
-struct History *historyTop  = NULL;  /* Stack top */
-struct Request *reqFront    = NULL;  /* Queue front */
-struct Request *reqRear     = NULL;  /* Queue rear */
+struct Donor *donorHead = NULL;
+struct History *historyTop = NULL;
+struct Request *reqFront = NULL;
+struct Request *reqRear = NULL;
 
-int nextDonorId   = 1;
+int nextDonorId = 1;
 int nextRequestId = 1;
 
 char bloodGroups[8][5] = {"A+","A-","B+","B-","AB+","AB-","O+","O-"};
-int  bloodStock[8]     = {0,0,0,0,0,0,0,0};
-
-/* ============================
-        HELPER FUNCTIONS
-============================ */
+int  bloodStock[8] = {0,0,0,0,0,0,0,0};
 
 void line() {
     printf("------------------------------------------\n");
@@ -80,10 +50,6 @@ int bloodIndex(char *bg) {
         if (strcmp(bloodGroups[i], bg) == 0) return i;
     return -1;
 }
-
-/* ============================
-     LINKED LIST - DONORS
-============================ */
 
 void addDonor() {
     struct Donor *d = (struct Donor *)malloc(sizeof(struct Donor));
@@ -97,7 +63,6 @@ void addDonor() {
     printf("Blood Group (e.g. A+, B-, O+): "); scanf(" %4s", d->blood);
     printf("Phone : "); scanf(" %14s", d->phone);
 
-    /* Add to end of linked list */
     if (donorHead == NULL) {
         donorHead = d;
     } else {
@@ -175,17 +140,13 @@ void deleteDonor() {
     printf("Donor ID %d not found.\n", id);
 }
 
-/* ============================
-        STACK - HISTORY
-============================ */
-
 void pushHistory(int donorId, char *name, char *blood, int units) {
     struct History *h = (struct History *)malloc(sizeof(struct History));
     h->donorId = donorId;
     strcpy(h->name, name);
     strcpy(h->blood, blood);
     h->units = units;
-    h->next = historyTop;   /* push onto stack */
+    h->next = historyTop;
     historyTop = h;
 }
 
@@ -230,10 +191,6 @@ void recordDonation() {
     printf("Donor not found.\n");
 }
 
-/* ============================
-        QUEUE - REQUESTS
-============================ */
-
 void addRequest() {
     struct Request *r = (struct Request *)malloc(sizeof(struct Request));
     r->id = nextRequestId++;
@@ -245,7 +202,6 @@ void addRequest() {
     printf("Units Needed : "); scanf(" %d", &r->units);
     printf("Hospital     : "); scanf(" %49[^\n]", r->hospital);
 
-    /* Enqueue at rear */
     if (reqRear == NULL) {
         reqFront = reqRear = r;
     } else {
@@ -310,10 +266,6 @@ void fulfillRequest() {
     }
 }
 
-/* ============================
-     BLOOD INVENTORY
-============================ */
-
 void viewInventory() {
     int i;
     printf("\n--- BLOOD INVENTORY ---\n");
@@ -330,15 +282,10 @@ void viewInventory() {
     line();
 }
 
-/* ============================
-        FILE SAVE / LOAD
-============================ */
-
 void saveToFile() {
     int i;
     FILE *f;
 
-    /* Save donors to donors.txt */
     f = fopen("donors.txt", "w");
     if (f != NULL) {
         fprintf(f, "%d\n", nextDonorId);
@@ -352,7 +299,6 @@ void saveToFile() {
         fclose(f);
     }
 
-    /* Save requests to requests.txt */
     f = fopen("requests.txt", "w");
     if (f != NULL) {
         fprintf(f, "%d\n", nextRequestId);
@@ -366,7 +312,6 @@ void saveToFile() {
         fclose(f);
     }
 
-    /* Save blood stock to stock.txt */
     f = fopen("stock.txt", "w");
     if (f != NULL) {
         for (i = 0; i < 8; i++)
@@ -381,7 +326,6 @@ void loadFromFile() {
     int i;
     FILE *f;
 
-    /* Load donors from donors.txt */
     f = fopen("donors.txt", "r");
     if (f != NULL) {
         fscanf(f, "%d\n", &nextDonorId);
@@ -403,7 +347,6 @@ void loadFromFile() {
         fclose(f);
     }
 
-    /* Load requests from requests.txt */
     f = fopen("requests.txt", "r");
     if (f != NULL) {
         fscanf(f, "%d\n", &nextRequestId);
@@ -421,7 +364,6 @@ void loadFromFile() {
         fclose(f);
     }
 
-    /* Load stock from stock.txt */
     f = fopen("stock.txt", "r");
     if (f != NULL) {
         char bg[5]; int units;
@@ -432,10 +374,6 @@ void loadFromFile() {
         fclose(f);
     }
 }
-
-/* ============================
-        MENUS
-============================ */
 
 void donorMenu() {
     int ch;
@@ -451,12 +389,12 @@ void donorMenu() {
         printf("Choice: ");
         scanf(" %d", &ch);
         switch (ch) {
-            case 1: addDonor();       break;
-            case 2: viewDonors();     break;
-            case 3: searchDonor();    break;
-            case 4: deleteDonor();    break;
+            case 1: addDonor(); break;
+            case 2: viewDonors(); break;
+            case 3: searchDonor(); break;
+            case 4: deleteDonor(); break;
             case 5: recordDonation(); break;
-            case 6: viewHistory();    break;
+            case 6: viewHistory(); break;
         }
     } while (ch != 0);
 }
@@ -472,8 +410,8 @@ void requestMenu() {
         printf("Choice: ");
         scanf(" %d", &ch);
         switch (ch) {
-            case 1: addRequest();     break;
-            case 2: viewRequests();   break;
+            case 1: addRequest(); break;
+            case 2: viewRequests(); break;
             case 3: fulfillRequest(); break;
         }
     } while (ch != 0);
@@ -499,10 +437,10 @@ int main() {
         scanf(" %d", &ch);
 
         switch (ch) {
-            case 1: donorMenu();     break;
-            case 2: requestMenu();   break;
+            case 1: donorMenu(); break;
+            case 2: requestMenu(); break;
             case 3: viewInventory(); break;
-            case 4: saveToFile();    break;
+            case 4: saveToFile(); break;
             case 0:
                 saveToFile();
                 printf("Goodbye!\n");
