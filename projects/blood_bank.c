@@ -2,10 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ============================
-        STRUCTURES
-============================ */
-
 struct Donor {
     int id;
     char name[50];
@@ -36,9 +32,6 @@ struct Request {
     struct Request *next;
 };
 
-/* ============================
-        GLOBAL VARIABLES
-============================ */
 struct Donor   *donorHead   = NULL; 
 struct History *historyTop  = NULL;
 struct Request *reqFront    = NULL;
@@ -61,9 +54,6 @@ int bloodIndex(char *bg) {
     return -1;
 }
 
-/* ============================
-     LINKED LIST - DONORS
-============================ */
 
 void addDonor() {
     struct Donor *d = (struct Donor *)malloc(sizeof(struct Donor));
@@ -154,10 +144,6 @@ void deleteDonor() {
     printf("Donor ID %d not found.\n", id);
 }
 
-/* ============================
-        STACK - HISTORY
-============================ */
-
 void pushHistory(int donorId, char *patient, char *blood, int units, char *hospital, char *phone) {
     struct History *h = (struct History *)malloc(sizeof(struct History));
     h->donorId = donorId;
@@ -202,10 +188,6 @@ void recordDonation(int id, int units, char *patient, char *hospital, char *phon
         cur = cur->next;
     }
 }
-
-/* ============================
-        QUEUE - REQUESTS
-============================ */
 
 void addRequest() {
     struct Request *r = (struct Request *)malloc(sizeof(struct Request));
@@ -303,10 +285,6 @@ void fulfillRequest() {
     }
 }
 
-/* ============================
-     BLOOD INVENTORY
-============================ */
-
 void viewInventory() {
     int i;
     printf("\n--- BLOOD INVENTORY ---\n");
@@ -322,10 +300,6 @@ void viewInventory() {
     }
     line();
 }
-
-/* ============================
-        FILE SAVE / LOAD
-============================ */
 
 void saveToFile() {
     int i;
@@ -419,10 +393,6 @@ void loadFromFile() {
         fclose(f);
     }
 }
-
-/* ============================
-        MENUS
-============================ */
 
 void donorMenu() {
     int ch;
